@@ -1,6 +1,6 @@
 <?php include_once '../../includes/header.php' ?>
 <div class="container">
-    <h1 class="text-center">Formulario de productos</h1>
+    <h1 class="text-center">Formulario de clientes</h1>
     <div class="row justify-content-center mb-3">
         <form class="col-lg-8 border bg-light p-3">
             <input type="hidden" name="cliente_id" id="cliente_id">
@@ -13,7 +13,7 @@
             <div class="row mb-3">
                 <div class="col">
                     <label for="cliente_apellido">Apellido del cliente</label>
-                    <input type="number" name="cliente_apellido" id="cliente_apellido" class="form-control" required>
+                    <input type="text" name="cliente_apellido" id="cliente_apellido" class="form-control" required>
                 </div>
             </div>
             <div class="row justify-content-center mb-3">
@@ -37,20 +37,20 @@
     </div>
     <div class="row justify-content-center">
         <div class="col-lg-8 table-responsive">
-            <h2 class="text-center">Listado de productos</h2>
-            <table class="table table-bordered table-hover" id="tablaProductos">
+            <h2 class="text-center">Listado de clientes</h2>
+            <table class="table table-bordered table-hover" id="tablaClientes">
                 <thead>
                     <tr>
                         <th>No.</th>
-                        <th>Descripción</th>
-                        <th>Precio</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
                         <th>Modificar</th>
                         <th>Eliminar</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="5">No hay productos disponibles</td>
+                        <td colspan="5">No hay clientes disponibles</td>
                     </tr>
                 </tbody>
             </table>

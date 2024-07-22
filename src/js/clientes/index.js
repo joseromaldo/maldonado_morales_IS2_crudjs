@@ -3,16 +3,16 @@ const btnModificar = document.getElementById('btnModificar')
 const btnBuscar = document.getElementById('btnBuscar')
 const btnCancelar = document.getElementById('btnCancelar')
 const btnLimpiar = document.getElementById('btnLimpiar')
-const tablaProductos = document.getElementById('tablaProductos')
+const tablaProductos = document.getElementById('tablaClientes')
 const formulario = document.querySelector('form')
 
 btnModificar.parentElement.style.display = 'none'
 btnCancelar.parentElement.style.display = 'none'
 
-const getProductos = async () => {
-    const nombre = formulario.producto_nombre.value
-    const precio = formulario.producto_precio.value
-    const url = `/crud-js-22072024/controllers/productos/index.php?producto_nombre=${nombre}&producto_precio=${precio}`
+const getClientes = async () => {
+    const nombre = formulario.cliente_nombre.value
+    const apellido = formulario.cliente_apellido.value
+    const url = `/maldonado_morales_IS2_crudjs/controllers/cliente/index.php?cliente_nombre=${nombre}&cliente_apellido=${apellido}`
     const config = {
         method: 'GET'
     }
@@ -21,7 +21,7 @@ const getProductos = async () => {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
 
-        tablaProductos.tBodies[0].innerHTML = ''
+        tablaClientes.tBodies[0].innerHTML = ''
         const fragment = document.createDocumentFragment()
         let contador = 1;
         console.log(data);
@@ -33,7 +33,7 @@ const getProductos = async () => {
                 timer: 3000,
                 timerProgressBar: true,
                 icon: "success",
-                title: 'Productos encontrados',
+                title: 'Clientes encontrados',
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
@@ -52,8 +52,8 @@ const getProductos = async () => {
                     const buttonEliminar = document.createElement('button')
 
                     celda1.innerText = contador;
-                    celda2.innerText = producto.producto_nombre;
-                    celda3.innerText = producto.producto_precio;
+                    celda2.innerText = producto.cliente_nombre;
+                    celda3.innerText = producto.cliente_apellido;
 
 
                     buttonModificar.textContent = 'Modificar'
@@ -78,14 +78,14 @@ const getProductos = async () => {
             } else {
                 const tr = document.createElement('tr')
                 const td = document.createElement('td')
-                td.innerText = 'No hay productos disponibles'
+                td.innerText = 'No hay clientes disponibles'
                 td.colSpan = 5;
 
                 tr.appendChild(td)
                 fragment.appendChild(tr)
             }
         } else {
-            console.log('hola');
+            
         }
 
         tablaProductos.tBodies[0].appendChild(fragment)
@@ -94,17 +94,17 @@ const getProductos = async () => {
     }
 }
 
-getProductos();
+getClientes();
 
 
-const guardarProducto = async (e) => {
+const guardarCliente = async (e) => {
     e.preventDefault();
     btnGuardar.disabled = true;
 
-    const url = '/crud-js-22072024/controllers/productos/index.php'
+    const url = '/maldonado_morales_IS2_crudjs/controllers/cliente/index.php'
     const formData = new FormData(formulario)
     formData.append('tipo', 1)
-    formData.delete('producto_id')
+    formData.delete('cliente_id')
     const config = {
         method: 'POST',
         body: formData
@@ -127,8 +127,7 @@ const guardarProducto = async (e) => {
                 toast.onmouseleave = Swal.resumeTimer;
             }
         }).fire();
-        // alert(mensaje)
-        // console.log(data);
+     
         if (codigo == 1 && respuesta.status == 200) {
             getProductos();
             formulario.reset();
@@ -144,5 +143,5 @@ const guardarProducto = async (e) => {
 
 
 
-formulario.addEventListener('submit', guardarProducto)
-btnBuscar.addEventListener('click', getProductos)
+formulario.addEventListener('submit', guardarCliente)
+btnBuscar.addEventListener('click', getClientes)

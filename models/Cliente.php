@@ -15,7 +15,7 @@ class Cliente extends Conexion{
     }
 
     public function guardar (){
-        $sql = "INSERT INTO cliente(cliente_nombre, cliente_apellido) VALUES ('$this->cliente_nombre','$this->cliente_apellido')";
+        $sql = "INSERT INTO cliente (cliente_nombre, cliente_apellido) VALUES ('$this->cliente_nombre','$this->cliente_apellido')";
         $resultado = self::ejecutar($sql);
         return $resultado;
     }
