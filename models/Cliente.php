@@ -28,7 +28,7 @@ class Cliente extends Conexion{
         }
 
         if($this->cliente_apellido != ''){
-            $sql .= " and cliente_apellido = $this->cliente_apellido ";
+            $sql .= " and cliente_apellido like '%$this->cliente_apellido%' ";
         }
 
         if($this->cliente_id != null){
@@ -40,7 +40,7 @@ class Cliente extends Conexion{
     }
 
     public function modificar(){
-        $sql = "UPDATE cliente SET cliente_nombre = '$this->cliente_nombre', cliente_apellido = $this->cliente_apellido WHERE cliente_id = $this->cliente_id";
+        $sql = "UPDATE cliente SET cliente_nombre = '$this->cliente_nombre', cliente_apellido = '$this->cliente_apellido' WHERE cliente_id = $this->cliente_id";
 
         $resultado = self::ejecutar($sql);
         return $resultado;

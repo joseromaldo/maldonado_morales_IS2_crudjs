@@ -3,7 +3,7 @@ const btnModificar = document.getElementById('btnModificar')
 const btnBuscar = document.getElementById('btnBuscar')
 const btnCancelar = document.getElementById('btnCancelar')
 const btnLimpiar = document.getElementById('btnLimpiar')
-const tablaProductos = document.getElementById('tablaClientes')
+const tablaClientes = document.getElementById('tablaClientes')
 const formulario = document.querySelector('form')
 
 btnModificar.parentElement.style.display = 'none'
@@ -41,7 +41,7 @@ const getClientes = async () => {
             }).fire();
 
             if (data.length > 0) {
-                data.forEach(producto => {
+                data.forEach(cliente => {
                     const tr = document.createElement('tr')
                     const celda1 = document.createElement('td')
                     const celda2 = document.createElement('td')
@@ -52,8 +52,8 @@ const getClientes = async () => {
                     const buttonEliminar = document.createElement('button')
 
                     celda1.innerText = contador;
-                    celda2.innerText = producto.cliente_nombre;
-                    celda3.innerText = producto.cliente_apellido;
+                    celda2.innerText = cliente.cliente_nombre;
+                    celda3.innerText = cliente.cliente_apellido;
 
 
                     buttonModificar.textContent = 'Modificar'
@@ -88,7 +88,7 @@ const getClientes = async () => {
             
         }
 
-        tablaProductos.tBodies[0].appendChild(fragment)
+        tablaClientes.tBodies[0].appendChild(fragment)
     } catch (error) {
         console.log(error);
     }
@@ -129,7 +129,7 @@ const guardarCliente = async (e) => {
         }).fire();
      
         if (codigo == 1 && respuesta.status == 200) {
-            getProductos();
+            getClientes();
             formulario.reset();
         } else {
             console.log(detalle);
