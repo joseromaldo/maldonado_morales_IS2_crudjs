@@ -3,12 +3,13 @@ require '../../models/Cliente.php';
 header('Content-Type: application/json; charset=UTF-8');
 
 $metodo = $_SERVER['REQUEST_METHOD'];
-$tipo = $_REQUEST['tipo'];
+// $tipo = $_REQUEST['tipo'];
 
 
 try {
     switch ($metodo) {
         case 'POST':
+            $tipo = $_REQUEST['tipo']; //Se cambió de posición esta variable
             $cliente = new Cliente($_POST);
             switch ($tipo) {
                 case '1':
@@ -17,8 +18,14 @@ try {
                     $mensaje = "Guardado correctamente";
                     break;
 
-                default:
+                    case '2':
 
+                        $ejecucion = $cliente->modificar();
+                        $mensaje = "Modificado correctamente";
+                        break;
+
+                default:
+                        $mensaje = "Tipo de operación no válida";
                     break;
             }
             http_response_code(200);
@@ -28,7 +35,7 @@ try {
             ]);
             break;
         case 'GET':
-            http_response_code(200);
+            // http_response_code(200);
             $cliente = new Cliente($_GET);
             $clientes = $cliente->buscar();
             echo json_encode($clientes);
