@@ -1,4 +1,4 @@
-<nav class="navbar navbar-dark navbar-expand-lg bg-dark">
+<nav class="navbar navbar-dark navbar-expand-lg bg-warning">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarPrincipal" aria-controls="navbarPrincipal" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -13,7 +13,7 @@
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Mantenimientos
                     </a>
-                    <ul class="dropdown-menu bg-dark">
+                    <ul class="dropdown-menu bg-warning">
                         <li class="nav-item">
                             <a class="nav-link" href="">Clientes</a>
                         </li>
