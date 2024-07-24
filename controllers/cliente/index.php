@@ -24,6 +24,12 @@ try {
                         $mensaje = "Modificado correctamente";
                         break;
 
+                        case '3':
+
+                            $ejecucion = $cliente->eliminar();
+                            $mensaje = "Eliminar correctamente";
+                            break;
+
                 default:
                         $mensaje = "Tipo de operación no válida";
                     break;

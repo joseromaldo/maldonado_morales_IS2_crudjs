@@ -286,66 +286,38 @@ const cancelar = (e) => {
 };
 
 const eliminar = async (clienteId) => {
-    // Confirmación antes de eliminar
-    const result = await Swal.fire({
-        title: '¿Estás seguro?',
-       
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sí, eliminarlo'
-    });
+    const url = '/maldonado_morales_IS2_crudjs/controllers/cliente/index.php';
+    const formData = new FormData();
+    formData.append('cliente_id', clienteId);
+    formData.append('tipo', 3);
 
-    if (result.isConfirmed) {
-        const url = '/maldonado_morales_IS2_crudjs/controllers/cliente/index.php';
-        const formData = new FormData();
-        formData.append('cliente_id', clienteId);
-        formData.append('tipo', 3);
+    const config = {
+        method: 'POST',
+        body: formData
+    };
 
-        const config = {
-            method: 'POST',
-            body: formData
-        };
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        const { mensaje, codigo, detalle } = data;
+        if (respuesta.ok && codigo === 1) {
+            Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                icon: "success",
+                title: mensaje,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            }).fire();
 
-        try {
-            const respuesta = await fetch(url, config);
-            const data = await respuesta.json();
-            const { mensaje, codigo, detalle } = data;
-            if (respuesta.ok && codigo === 1) {
-                Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    icon: "success",
-                    title: mensaje,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                    }
-                }).fire();
-
-                getClientes();
-            } else {
-                console.log('Error:', detalle);
-                Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    icon: "error",
-                    title: 'Error al eliminar',
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                    }
-                }).fire();
-            }
-        } catch (error) {
-            console.log('Error de conexión:', error);
+            getClientes();
+        } else {
+            console.log('Error:', detalle);
             Swal.mixin({
                 toast: true,
                 position: "top-end",
@@ -353,24 +325,34 @@ const eliminar = async (clienteId) => {
                 timer: 3000,
                 timerProgressBar: true,
                 icon: "error",
-                title: 'Error de conexión',
+                title: 'Error al eliminar',
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
                 }
             }).fire();
         }
+    } catch (error) {
+        console.log('Error de conexión:', error);
+        Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            icon: "error",
+            title: 'Error de conexión',
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        }).fire();
     }
 };
 
-const agregarEventosEliminar = () => {
-    const botonesEliminar = document.querySelectorAll('.btnEliminar');
-    botonesEliminar.forEach((boton) => {
-        const clienteId = boton.dataset.clienteId;
-        boton.addEventListener('click', () => eliminar(clienteId));
-    });
+const limpiarFormulario = () => {
+    formulario.reset();
 };
-
 
 btnGuardar.addEventListener('click', guardarCliente);
 btnModificar.addEventListener('click', modificar);
