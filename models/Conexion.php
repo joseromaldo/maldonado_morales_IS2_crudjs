@@ -52,10 +52,14 @@ abstract class Conexion {
    
         $sentencia->execute();
         $resultados = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+        
 
         // CERRANDO LA CONEXION
         self::$conexion = null;
+        
         // DEVOLVEMOS RESULTADOS
         return $resultados;
     }
+  
 }
+

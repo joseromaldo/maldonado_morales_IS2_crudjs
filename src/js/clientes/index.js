@@ -1,13 +1,14 @@
-const btnGuardar = document.getElementById('btnGuardar')
-const btnModificar = document.getElementById('btnModificar')
-const btnBuscar = document.getElementById('btnBuscar')
-const btnCancelar = document.getElementById('btnCancelar')
-const btnLimpiar = document.getElementById('btnLimpiar')
-const tablaClientes = document.getElementById('tablaClientes')
-const formulario = document.querySelector('form')
+const btnGuardar = document.getElementById('btnGuardar');
+const btnModificar = document.getElementById('btnModificar');
+const btnBuscar = document.getElementById('btnBuscar');
+const btnCancelar = document.getElementById('btnCancelar');
+const btnLimpiar = document.getElementById('btnLimpiar');
+const tablaClientes = document.getElementById('tablaClientes');
+const formulario = document.querySelector('form');
+const btnEliminar = document.querySelector('.btnEliminar');
 
-btnModificar.parentElement.style.display = 'none'
-btnCancelar.parentElement.style.display = 'none'
+btnModificar.parentElement.style.display = 'none';
+btnCancelar.parentElement.style.display = 'none';
 
 const getClientes = async () => {
     const nombre = formulario.cliente_nombre.value.trim();
@@ -17,7 +18,7 @@ const getClientes = async () => {
   
     const config = {
         method: 'GET'
-    }
+    };
 
     try {
         const respuesta = await fetch(url, config);
@@ -28,7 +29,7 @@ const getClientes = async () => {
         const fragment = document.createDocumentFragment();
         let contador = 1;
 
-        if (respuesta.status == 200) {
+        if (respuesta.status === 200) {
             Swal.mixin({
                 toast: true,
                 position: "top-end",
@@ -43,119 +44,115 @@ const getClientes = async () => {
                 }
             }).fire();
 
-        if (data.length > 0) {
-            data.forEach(cliente => {
+            if (data.length > 0) {
+                data.forEach(cliente => {
+                    const tr = document.createElement('tr');
+                    const celda1 = document.createElement('td');
+                    const celda2 = document.createElement('td');
+                    const celda3 = document.createElement('td');
+                    const celda4 = document.createElement('td');
+                    const celda5 = document.createElement('td');
+                    const buttonModificar = document.createElement('button');
+                    const buttonEliminar = document.createElement('button');
+
+                    celda1.innerText = contador;
+                    celda2.innerText = cliente.CLIENTE_NOMBRE;
+                    celda3.innerText = cliente.CLIENTE_APELLIDO;
+
+                    buttonModificar.textContent = 'Modificar';
+                    buttonModificar.classList.add('btn', 'btn-warning', 'w-100');
+                    buttonModificar.addEventListener('click', () => llenardatos(cliente));
+
+                    buttonEliminar.textContent = 'Eliminar';
+                    buttonEliminar.classList.add('btn', 'btn-danger', 'w-100');
+                    buttonEliminar.addEventListener('click', () => eliminar(cliente.CLIENTE_ID));
+
+                    celda4.appendChild(buttonModificar);
+                    celda5.appendChild(buttonEliminar);
+
+                    tr.appendChild(celda1);
+                    tr.appendChild(celda2);
+                    tr.appendChild(celda3);
+                    tr.appendChild(celda4);
+                    tr.appendChild(celda5);
+                    fragment.appendChild(tr);
+
+                    contador++;
+                });
+            } else {
                 const tr = document.createElement('tr');
-                const celda1 = document.createElement('td');
-                const celda2 = document.createElement('td');
-                const celda3 = document.createElement('td');
-                const celda4 = document.createElement('td');
-                const celda5 = document.createElement('td');
-                const buttonModificar = document.createElement('button');
-                const buttonEliminar = document.createElement('button');
+                const td = document.createElement('td');
+                td.innerText = 'No hay clientes disponibles';
+                td.colSpan = 5;
 
-                celda1.innerText = contador;
-                celda2.innerText = cliente.CLIENTE_NOMBRE;
-                celda3.innerText = cliente.CLIENTE_APELLIDO;
-
-                buttonModificar.textContent = 'Modificar';
-                buttonModificar.classList.add('btn', 'btn-warning', 'w-100');
-                buttonModificar.addEventListener('click', () => llenardatos(cliente) )
-
-                buttonEliminar.textContent = 'Eliminar';
-                buttonEliminar.classList.add('btn', 'btn-danger', 'w-100');
-
-                buttonCancelar.addEventListener('click', () => cancelar(cliente) )
-
-                celda4.appendChild(buttonModificar);
-                celda5.appendChild(buttonEliminar);
-
-                tr.appendChild(celda1);
-                tr.appendChild(celda2);
-                tr.appendChild(celda3);
-                tr.appendChild(celda4);
-                tr.appendChild(celda5);
+                tr.appendChild(td);
                 fragment.appendChild(tr);
-
-                contador++;
-            });
+            }
         } else {
-            const tr = document.createElement('tr');
-            const td = document.createElement('td');
-            td.innerText = 'No hay clientes disponibles';
-            td.colSpan = 5;
-
-            tr.appendChild(td);
-            fragment.appendChild(tr);
+            console.log('Error al cargar clientes');
         }
-    }else{
-        console.log('error al cargar clientes');
-    }
 
         tablaClientes.tBodies[0].appendChild(fragment);
     } catch (error) {
         console.log(error);
     }
-}
+};
 
 getClientes();
-
 
 const guardarCliente = async (e) => {
     e.preventDefault();
     btnGuardar.disabled = true;
 
-    const url = '/maldonado_morales_IS2_crudjs/controllers/cliente/index.php'
-    const formData = new FormData(formulario)
-   
-    formData.append('tipo', 1)
-    formData.delete('cliente_id')
-  
+    const url = '/maldonado_morales_IS2_crudjs/controllers/cliente/index.php';
+    const formData = new FormData(formulario);
+    formData.append('tipo', 1);
+    formData.delete('cliente_id');
+
     const config = {
         method: 'POST',
         body: formData
-    }
-   
+    };
 
     try {
         console.log('Enviando datos:', ...formData.entries());
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
         console.log('Respuesta recibida:', data);
-        const { mensaje, codigo, detalle } = data
+        const { mensaje, codigo, detalle } = data;
         if (respuesta.ok && codigo === 1) {
-        Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            icon: "success",
-            title: mensaje,
-            didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-            }
-        }).fire();
-        getClientes();
-        formulario.reset();
-    }else{
-        console.log('Error:', detalle);
-        Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            icon: "error",
-            title: 'Error al guardar',
-            didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-            }
-        }).fire();
-    }
+            Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                icon: "success",
+                title: mensaje,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            }).fire();
 
+            formulario.reset();
+            getClientes();
+        } else {
+            console.log('Error:', detalle);
+            Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                icon: "error",
+                title: 'Error al guardar',
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            }).fire();
+        }
     } catch (error) {
         console.log('Error de conexión:', error);
         Swal.mixin({
@@ -173,88 +170,106 @@ const guardarCliente = async (e) => {
         }).fire();
     }
     btnGuardar.disabled = false;
-}
+};
 
 const llenardatos = (cliente) => {
-    formulario.cliente_nombre.value = cliente.cliente_nombre
-    formulario.cliente_apellido.value = cliente.cliente_apellido
+    formulario.cliente_nombre.value = cliente.CLIENTE_NOMBRE;
+    formulario.cliente_apellido.value = cliente.CLIENTE_APELLIDO;
+    formulario.cliente_id.value = cliente.CLIENTE_ID;
 
-    btnBuscar.parentElement.style.display = 'none'
-    btnCancelar.parentElement.style.display = ''
-    btnGuardar.parentElement.style.display = 'none'
-    btnModificar.parentElement.style.display = ''
-}
+    btnLimpiar.parentElement.style.display = 'none';
+    btnBuscar.parentElement.style.display = 'none';
+    btnCancelar.parentElement.style.display = '';
+    btnGuardar.parentElement.style.display = 'none';
+    btnModificar.parentElement.style.display = '';
+};
 
 const modificar = async (e) => {
     e.preventDefault();
     btnModificar.disabled = true;
 
-    const url = '/maldonado_morales_IS2_crudjs/controllers/cliente/index.php'
-    const formData = new FormData(formulario)
-   
-    formData.append('tipo', 2)
-  
+    const url = '/maldonado_morales_IS2_crudjs/controllers/cliente/index.php';
+    const formData = new FormData(formulario);
+    formData.append('tipo', 2);
+
     const config = {
         method: 'POST',
         body: formData
-    }
-   
+    };
 
     try {
         console.log('Enviando datos:', ...formData.entries());
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-        const { mensaje, codigo, detalle } = data
+        console.log('Respuesta recibida:', data);
+        const { mensaje, codigo, detalle } = data;
+        if (respuesta.ok && codigo === 1) {
+            Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                icon: "success",
+                title: mensaje,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            }).fire();
+
+            formulario.reset();
+            getClientes();
+            btnBuscar.parentElement.style.display = '';
+            btnCancelar.parentElement.style.display = 'none';
+            btnGuardar.parentElement.style.display = '';
+            btnModificar.parentElement.style.display = 'none';
+        } else {
+            console.log('Error:', detalle);
+            Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                icon: "error",
+                title: 'Error al modificar',
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            }).fire();
+        }
+    } catch (error) {
+        console.log('Error de conexión:', error);
         Swal.mixin({
             toast: true,
             position: "top-end",
             showConfirmButton: false,
             timer: 3000,
             timerProgressBar: true,
-            icon: "success",
-            title: mensaje,
+            icon: "error",
+            title: 'Error de conexión',
             didOpen: (toast) => {
                 toast.onmouseenter = Swal.stopTimer;
                 toast.onmouseleave = Swal.resumeTimer;
             }
         }).fire();
-     
-        if (codigo == 1 && respuesta.status == 200) {
-            
-            formulario.reset();
-            getClientes();
-            btnBuscar.parentElement.style.display = ''
-            btnCancelar.parentElement.style.display = ''
-            btnGuardar.parentElement.style.display = ''
-            btnModificar.parentElement.style.display = ''
-          
-        } else {
-            console.log(detalle);
-        }
-
-    } catch (error) {
-        console.log(error);
     }
-    btnGuardar.disabled = false;
-}
+    btnModificar.disabled = false;
+};
 
-const cancelar = async (e) => {
+const cancelar = (e) => {
     e.preventDefault();
-    btnCancelar.disabled = true;
 
-    // Resetear el formulario
     formulario.reset();
-    
-    // Ocultar o mostrar botones según sea necesario
+
+    btnLimpiar.parentElement.style.display = '';
     btnBuscar.parentElement.style.display = '';
-    btnCancelar.parentElement.style.display = '';
+    btnCancelar.parentElement.style.display = 'none';
     btnGuardar.parentElement.style.display = '';
-    btnModificar.parentElement.style.display = '';
+    btnModificar.parentElement.style.display = 'none';
 
-    // Rehabilitar el botón de guardar si está deshabilitado
-    btnGuardar.disabled = false;
-
-    // Mostrar un mensaje de cancelación exitosa
     Swal.mixin({
         toast: true,
         position: "top-end",
@@ -268,9 +283,97 @@ const cancelar = async (e) => {
             toast.onmouseleave = Swal.resumeTimer;
         }
     }).fire();
-}
+};
 
-formulario.addEventListener('submit', guardarCliente)
-btnBuscar.addEventListener('click', getClientes)
-btnModificar.addEventListener('click', modificar)
-btnCancelar.addEventListener('click', cancelar)
+const eliminar = async (clienteId) => {
+    // Confirmación antes de eliminar
+    const result = await Swal.fire({
+        title: '¿Estás seguro?',
+       
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminarlo'
+    });
+
+    if (result.isConfirmed) {
+        const url = '/maldonado_morales_IS2_crudjs/controllers/cliente/index.php';
+        const formData = new FormData();
+        formData.append('cliente_id', clienteId);
+        formData.append('tipo', 3);
+
+        const config = {
+            method: 'POST',
+            body: formData
+        };
+
+        try {
+            const respuesta = await fetch(url, config);
+            const data = await respuesta.json();
+            const { mensaje, codigo, detalle } = data;
+            if (respuesta.ok && codigo === 1) {
+                Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    icon: "success",
+                    title: mensaje,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                }).fire();
+
+                getClientes();
+            } else {
+                console.log('Error:', detalle);
+                Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    icon: "error",
+                    title: 'Error al eliminar',
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                }).fire();
+            }
+        } catch (error) {
+            console.log('Error de conexión:', error);
+            Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                icon: "error",
+                title: 'Error de conexión',
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            }).fire();
+        }
+    }
+};
+
+const agregarEventosEliminar = () => {
+    const botonesEliminar = document.querySelectorAll('.btnEliminar');
+    botonesEliminar.forEach((boton) => {
+        const clienteId = boton.dataset.clienteId;
+        boton.addEventListener('click', () => eliminar(clienteId));
+    });
+};
+
+
+btnGuardar.addEventListener('click', guardarCliente);
+btnModificar.addEventListener('click', modificar);
+btnCancelar.addEventListener('click', cancelar);
+btnBuscar.addEventListener('click', getClientes);
+btnLimpiar.addEventListener('click', limpiarFormulario);
