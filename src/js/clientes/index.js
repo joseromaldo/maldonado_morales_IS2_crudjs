@@ -5,7 +5,6 @@ const btnCancelar = document.getElementById('btnCancelar');
 const btnLimpiar = document.getElementById('btnLimpiar');
 const tablaClientes = document.getElementById('tablaClientes');
 const formulario = document.querySelector('form');
-const btnEliminar = document.querySelector('.btnEliminar');
 
 btnModificar.parentElement.style.display = 'none';
 btnCancelar.parentElement.style.display = 'none';
